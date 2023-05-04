@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Przechowywaj słowa w swojej bibliotece słów</title>
+    <link rel="stylesheet" href="index.css" />
+  </head>
+  <body>
+    <h1>💖 Przechowywalnia słów 💖</h1>
+    <p>Witaj w mojej elektronowej aplikacji.</p>
+    <a href="http://localhost:6969/test">idzi do testu</a> <br>
+    <input type="text" id="j"> <br>
+    <input type="text" id="d"> <br>
+    <button id="wyslij">Wyślij</button>
+    <button id="pokaz">pokaz</button>
+    <button id="del">usun wszystko</button>
+    <div id="main"></div>
+    <script>
+      document.querySelector('#wyslij').addEventListener('click',()=>{
+        const obiekt = { 
+          jeden: document.getElementById('j').value,
+          dwa: document.getElementById('d').value
+      }
+      document.querySelectorAll('input').forEach( e => {
+        e.value = ""
+      })
+      fetch('http://localhost:6969/wyslij',{
+        method: "POST",
+        body: JSON.stringify(obiekt),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+    })
+      document.querySelector('#pokaz').addEventListener('click',()=>{
+        fetch('http://localhost:6969/pobierz').then(response => response.json()).then(data => {
+          let div = document.querySelector('#main')
+          div.innerHTML = ''
+          data.forEach((e,i) => {
+            const pojemnik = document.createElement('div')
+            const tytul = document.createElement('h1')
+            const id = document.createElement('p')
+            const jeden = document.createElement('p')
+            const dwa = document.createElement('p')
+            tytul.innerText = `${i+1} Rekord`
+            id.innerText = `To jest id: ${e._id}`
+            jeden.innerText = `To jest jeden: ${e.jeden}`
+            dwa.innerText = `To jest dwa: ${e.dwa}`
+            pojemnik.appendChild(tytul)
+            pojemnik.appendChild(id)
+            pojemnik.appendChild(jeden)
+            pojemnik.appendChild(dwa)
+            div.appendChild(pojemnik)
+          });
+          //document.body.innerHTML = data
+        })
+    })
+    document.querySelector('#del').addEventListener('click',()=>{
+      fetch('http://localhost:6969/usun')
+      let div = document.querySelector('#main')
+      div.innerHTML = ''
+    })
+    </script>
+  </body>
+</html>
